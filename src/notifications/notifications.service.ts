@@ -13,9 +13,8 @@ export class NotificationsService {
 
   async create(createDto: any): Promise<Notification> {
     const notification = this.notificationRepository.create(createDto);
-    await this.notificationRepository.save(notification);
     // TODO: Send push via FCM
-    return notification;
+    return await (this.notificationRepository.save(notification) as unknown as Promise<Notification>);
   }
 
   findAll(): Promise<Notification[]> {

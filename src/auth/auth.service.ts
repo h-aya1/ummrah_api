@@ -41,7 +41,6 @@ export class AuthService {
 
   async forgotPassword(email: string) {
     const user = await this.usersService.findByEmail(email);
-    if (!user) throw new UnauthorizedException('User not found');
     // TODO: Send email with reset token (integrate email service like Nodemailer)
     const resetToken = this.jwtService.sign({ email }, { expiresIn: '1h' });
     return { message: 'Reset link sent', token: resetToken };  // In real, send via email
@@ -51,6 +50,9 @@ export class AuthService {
     try {
       const { email } = this.jwtService.verify(token);
       const user = await this.usersService.findByEmail(email);
+      if (!user) {
+        throw new UnauthorizedException('User not found');
+      }
       user.passwordHash = await bcrypt.hash(newPassword, 10);
       await this.userRepository.save(user);
       return { message: 'Password reset successful' };

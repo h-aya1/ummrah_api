@@ -20,6 +20,10 @@ export class UsersService {
     return this.usersRepository.findOneBy({ id });
   }
 
+  async findAll(): Promise<User[]> {
+    return this.usersRepository.find();
+  }
+
   //  Inline typed input: password is plain text, everything else matches User
   async create(
     user: Omit<User, 'id' | 'passwordHash'> & { password: string },

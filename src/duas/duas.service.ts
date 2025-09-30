@@ -19,16 +19,16 @@ export class DuasService {
     return this.duasRepository.find();
   }
 
-  findOne(id: string): Promise<Dua> {
+  findOne(id: string): Promise<Dua | null> {
     return this.duasRepository.findOneBy({ id });
   }
 
   async create(createDto: any): Promise<Dua> {
     const dua = this.duasRepository.create(createDto);
-    return this.duasRepository.save(dua);
+    return this.duasRepository.save(dua) as unknown as Promise<Dua>;
   }
 
-  async update(id: string, updateDto: any): Promise<Dua> {
+  async update(id: string, updateDto: any): Promise<Dua | null> {
     await this.duasRepository.update(id, updateDto);
     return this.findOne(id);
   }

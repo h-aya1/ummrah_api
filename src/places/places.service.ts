@@ -2,6 +2,8 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Place } from './entities/place.entity';
+import { CreatePlaceDto } from './dto/create-place.dto';
+import { UpdatePlaceDto } from './dto/update-place.dto';
 
 @Injectable()
 export class PlacesService {
@@ -22,12 +24,12 @@ export class PlacesService {
     return place;
   }
 
-  async create(createDto: any): Promise<Place> {
+  async create(createDto: CreatePlaceDto): Promise<Place> {
     const place = this.placesRepository.create(createDto);
     return this.placesRepository.save(place);
   }
 
-  async update(id: string, updateDto: any): Promise<Place> {
+  async update(id: string, updateDto: UpdatePlaceDto): Promise<Place> {
     await this.placesRepository.update(id, updateDto);
     const updated = await this.findOne(id);
     return updated;

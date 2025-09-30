@@ -14,16 +14,16 @@ export class GuideService {
     return this.guideRepository.find({ order: { order: 'ASC' } });
   }
 
-  findOne(id: string): Promise<Guide> {
+  findOne(id: string): Promise<Guide | null> {
     return this.guideRepository.findOneBy({ id });
   }
 
   async create(createDto: any): Promise<Guide> {
     const guide = this.guideRepository.create(createDto);
-    return this.guideRepository.save(guide);
+    return this.guideRepository.save(guide) as unknown as Promise<Guide>;
   }
 
-  async update(id: string, updateDto: any): Promise<Guide> {
+  async update(id: string, updateDto: any): Promise<Guide | null> {
     await this.guideRepository.update(id, updateDto);
     return this.findOne(id);
   }
