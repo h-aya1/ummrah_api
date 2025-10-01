@@ -1,24 +1,25 @@
-import { IsNotEmpty, IsObject, IsNumber, IsString, IsUrl } from 'class-validator';
+import { IsNotEmpty, IsObject, IsString, IsArray, IsUrl } from 'class-validator';
 
 export class CreatePlaceDto {
   @IsNotEmpty()
-  @IsObject()
-  name: { en: string; am: string; or: string };
+  @IsString()
+  name: string;
 
   @IsNotEmpty()
   @IsObject()
-  description: { en: string; am: string; or: string };
+  description: { english: string; amharic: string; oromo: string };
 
   @IsNotEmpty()
-  @IsNumber()
-  latitude: number;
+  @IsString()
+  city: string;
 
   @IsNotEmpty()
-  @IsNumber()
-  longitude: number;
+  @IsArray()
+  @IsString({ each: true })
+  images: string[];
 
   @IsNotEmpty()
   @IsString()
   @IsUrl()
-  imageUrl: string;
+  mapLocation: string;
 }

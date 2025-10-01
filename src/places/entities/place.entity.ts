@@ -5,18 +5,18 @@ export class Place {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column('json')
-  name: { en: string; am: string; or: string };
+  @Column()
+  name: string;
 
   @Column('json')
-  description: { en: string; am: string; or: string };
-
-  @Column('double precision')
-  latitude: number;
-
-  @Column('double precision')
-  longitude: number;
+  description: { english: string; amharic: string; oromo: string };
 
   @Column()
-  imageUrl: string;
+  city: string;
+
+  @Column('json')
+  images: string[];
+
+  @Column()
+  mapLocation: string;
 }

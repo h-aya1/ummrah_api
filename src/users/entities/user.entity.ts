@@ -8,10 +8,10 @@ export class User {
   @Column()
   name: string;
 
-  @Column({ unique: true })
+  @Column({ unique: true, nullable: true })
   email: string;
 
-  @Column()
+  @Column({ unique: true })
   phone: string;
 
   @Column()

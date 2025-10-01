@@ -6,17 +6,17 @@ export class Dua {
   id: string;
 
   @Column()
+  title: string;
+
+  @Column()
   category: string;
 
   @Column('text')
   arabic: string;
 
-  @Column('text')
-  transliteration: string;
-
   @Column('json')
-  translation: { en: string; am: string; or: string };
+  translation: { english: string; amharic: string; oromo: string };
 
   @Column()
-  audioUrl: string;
+  audio: string;
 }

@@ -1,25 +1,21 @@
-import { IsNotEmpty, IsString, IsObject, IsArray, IsUrl, IsNumber } from 'class-validator';
+import { IsNotEmpty, IsString, IsNumber, IsOptional, IsObject } from 'class-validator';
 
 export class CreateGuideDto {
   @IsNotEmpty()
   @IsString()
-  stepName: string;
-
-  @IsNotEmpty()
-  @IsObject()
-  description: { en: string; am: string; or: string };
-
-  @IsNotEmpty()
-  @IsArray()
-  @IsString({ each: true })
-  images: string[];
-
-  @IsNotEmpty()
-  @IsString()
-  @IsUrl()
-  audioUrl: string;
+  title: string;
 
   @IsNotEmpty()
   @IsNumber()
   order: number;
+
+  @IsOptional()
+  @IsObject()
+  media?: { image?: string; video?: string; audio?: string };
+
+  @IsOptional()
+  @IsObject()
+  translations?: { english: string; amharic: string; oromo: string };
+
+  // Steps will be handled separately or in nested create
 }

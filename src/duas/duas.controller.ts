@@ -1,4 +1,5 @@
-import { Controller, Get, Post, Put, Delete, Body, Param, Query, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Put, Delete, Body, Param, Query, UseGuards, UseInterceptors, UploadedFile } from '@nestjs/common';
+import { FileInterceptor } from '@nestjs/platform-express';
 import { DuasService } from './duas.service';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { RolesGuard } from '../auth/roles.guard';  // Create this for role checks
@@ -22,16 +23,18 @@ export class DuasController {
 
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles('admin')
+  @UseInterceptors(FileInterceptor('audio'))
   @Post()
-  create(@Body() createDto: CreateDuaDto) {
-    return this.duasService.create(createDto);
+  create(@Body() createDto: CreateDuaDto, @UploadedFile() file: Express.Multer.File) {
+    return this.duasService.create(createDto, file);
   }
 
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles('admin')
+  @UseInterceptors(FileInterceptor('audio'))
   @Put(':id')
-  update(@Param('id') id: string, @Body() updateDto: UpdateDuaDto) {
-    return this.duasService.update(id, updateDto);
+  update(@Param('id') id: string, @Body() updateDto: UpdateDuaDto, @UploadedFile() file?: Express.Multer.File) {
+    return this.duasService.update(id, updateDto, file);
   }
 
   @UseGuards(JwtAuthGuard, RolesGuard)

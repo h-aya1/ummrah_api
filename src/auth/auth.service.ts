@@ -5,6 +5,7 @@ import * as bcrypt from 'bcrypt';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { User } from '../users/entities/user.entity';  // Import from users module
+import * as crypto from 'crypto';
 
 @Injectable()
 export class AuthService {
@@ -14,8 +15,15 @@ export class AuthService {
     @InjectRepository(User) private userRepository: Repository<User>,
   ) {}
 
-  async validateUser(email: string, pass: string): Promise<any> {
-    const user = await this.usersService.findByEmail(email);
+  async validateUser(username: string, pass: string): Promise<any> {
+    let user: User | null;
+    if (username.includes('@')) {
+      // Admin login with email
+      user = await this.usersService.findByEmail(username);
+    } else {
+      // User login with phone
+      user = await this.usersService.findByPhone(username);
+    }
     if (user && await bcrypt.compare(pass, user.passwordHash)) {
       const { passwordHash, ...result } = user;
       return result;
@@ -24,19 +32,27 @@ export class AuthService {
   }
 
   async login(user: any) {
-    const payload = { email: user.email, sub: user.id, role: user.role };
+    const payload = { sub: user.id, role: user.role, username: user.email || user.phone };
     return {
       access_token: this.jwtService.sign(payload),
     };
   }
 
   async register(createUserDto: any) {
-    const hashedPassword = await bcrypt.hash(createUserDto.password, 10);
+    let password = createUserDto.password;
+    if (!password || createUserDto.role !== 'admin') {
+      // Generate password for users
+      password = crypto.randomBytes(4).toString('hex'); // 8 character hex
+    }
+    const hashedPassword = await bcrypt.hash(password, 10);
     const user = this.userRepository.create({
       ...createUserDto,
       passwordHash: hashedPassword,
     });
-    return this.userRepository.save(user);
+    const savedUser = await this.userRepository.save(user) as any;
+    // Return user without passwordHash, and include plain password for admin to give to user
+    const { passwordHash, ...result } = savedUser;
+    return { ...result, password: createUserDto.role === 'admin' ? undefined : password };
   }
 
   async forgotPassword(email: string) {

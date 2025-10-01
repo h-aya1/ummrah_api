@@ -1,6 +1,10 @@
-import { IsNotEmpty, IsString, IsObject, IsUrl } from 'class-validator';
+import { IsNotEmpty, IsString, IsObject } from 'class-validator';
 
 export class CreateDuaDto {
+  @IsNotEmpty()
+  @IsString()
+  title: string;
+
   @IsNotEmpty()
   @IsString()
   category: string;
@@ -10,15 +14,10 @@ export class CreateDuaDto {
   arabic: string;
 
   @IsNotEmpty()
-  @IsString()
-  transliteration: string;
-
-  @IsNotEmpty()
   @IsObject()
-  translation: { en: string; am: string; or: string };
+  translation: { english: string; amharic: string; oromo: string };
 
   @IsNotEmpty()
   @IsString()
-  @IsUrl()
-  audioUrl: string;
+  audio: string;
 }
